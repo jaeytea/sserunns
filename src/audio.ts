@@ -5,10 +5,12 @@ export class AudioSuite {
   clickSound: HTMLAudioElement;
 
   constructor() {
-    this.bgMusic = new Audio("/audio/bgm.wav");
-    this.jumpSound = new Audio("/audio/jump.wav");
-    this.clickSound = new Audio("/audio/button.wav");
-    this.gameOverSound = new Audio("/audio/playerhurt.wav");
+    this.bgMusic = new Audio(`${import.meta.env.BASE_URL}audio/bgm.wav`);
+    this.jumpSound = new Audio(`${import.meta.env.BASE_URL}audio/jump.wav`);
+    this.clickSound = new Audio(`${import.meta.env.BASE_URL}audio/button.wav`);
+    this.gameOverSound = new Audio(
+      `${import.meta.env.BASE_URL}audio/playerhurt.wav`,
+    );
 
     this.bgMusic.loop = true;
     this.bgMusic.volume = 0.2;
