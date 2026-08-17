@@ -1,5 +1,8 @@
 import playerSsera from "./assets/sseratwo.png";
 import { Game } from "./game";
+import { GameConsole } from "./console";
+import "./style.css";
+import { AudioSuite } from "./audio";
 
 const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
 const ctx = canvas.getContext("2d");
@@ -10,15 +13,25 @@ if (!ctx) {
 
 const context = ctx;
 
-canvas.width = 1000;
-canvas.height = 700;
+canvas.width = 800;
+canvas.height = 500;
 
 const ssera = new Image();
 
 ssera.src = playerSsera;
 
+const audio = new AudioSuite();
+window.addEventListener("keydown", (event) => {
+  if (event.code === "KeyM") {
+    audio.startMusic();
+  }
+});
+
 ssera.onload = () => {
-  const game = new Game(canvas, context, ssera);
+  const gameConsole = new GameConsole(canvas);
+
+  gameConsole.render();
+  const game = new Game(canvas, context, ssera, audio);
 
   game.start();
 };

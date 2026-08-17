@@ -3,6 +3,7 @@ import { Obstacle } from "./obstacle";
 import cactus from "./assets/cacti.png";
 import brokenGlass from "./assets/glasspoint.png";
 import thornball from "./assets/thornball.png";
+import type { AudioSuite } from "./audio";
 
 export type GameState = "playing" | "gameOver";
 
@@ -17,15 +18,18 @@ export class Game {
   state: GameState = "playing";
   sseraImage: HTMLImageElement;
   groundY: number;
+  audio: AudioSuite;
 
   constructor(
     canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     sseraImage: HTMLImageElement,
+    audio: AudioSuite,
   ) {
     this.canvas = canvas;
     this.ctx = ctx;
     this.sseraImage = sseraImage;
+    this.audio = audio;
 
     this.groundY = 330;
 
@@ -88,6 +92,7 @@ export class Game {
 
       if (this.player.collidesWith(obstacle)) {
         this.state = "gameOver";
+        this.audio.gameOver();
       }
     }
 
@@ -129,11 +134,11 @@ export class Game {
     this.ctx.textAlign = "center";
 
     this.ctx.fillStyle = "#fff";
-    this.ctx.font = "48px monospace";
+    this.ctx.font = "48px 'Geist Pixel', monospace";
 
     this.ctx.fillText("GAME OVER", this.canvas.width / 2, 290);
 
-    this.ctx.font = "24px monospace";
+    this.ctx.font = "24px 'Geist Pixel', monospace";
 
     this.ctx.fillText(
       `SCORE: ${Math.floor(this.score / 6)}`,
@@ -146,11 +151,11 @@ export class Game {
 
   drawBackground() {
     // Walls
-    this.ctx.fillStyle = "#d88fc8";
+    this.ctx.fillStyle = "#b78390 ";
     this.ctx.fillRect(0, 0, this.canvas.width, 330);
 
     // Subtle wall panels
-    this.ctx.strokeStyle = "#e06598";
+    this.ctx.strokeStyle = "#ab6783";
     this.ctx.lineWidth = 2;
 
     // for (let x = 0; x < this.canvas.width; x += 100) {
@@ -176,7 +181,7 @@ export class Game {
 
     this.groundOffset -= 2;
 
-    if (this.groundOffset <= -40) {
+    if (this.groundOffset <= -40 || this.state === "gameOver") {
       this.groundOffset = 0;
     }
 
@@ -195,7 +200,7 @@ export class Game {
     // Scroll wall
     this.wallOffset -= 1.5;
 
-    if (this.wallOffset <= -100) {
+    if (this.wallOffset <= -100 || this.state === "gameOver") {
       this.wallOffset = 0;
     }
   }
@@ -203,7 +208,7 @@ export class Game {
   //drawscore
   drawScore() {
     this.ctx.fillStyle = "#3f3525";
-    this.ctx.font = "24px monospace";
+    this.ctx.font = "24px 'Geist Pixel', monospace";
     this.ctx.textAlign = "right";
 
     this.ctx.fillText(
@@ -231,6 +236,7 @@ export class Game {
         this.reset();
       } else {
         this.player.jump();
+        this.audio.jump();
       }
     });
   }
