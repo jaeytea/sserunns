@@ -4,6 +4,7 @@ export class Obstacle {
   width: number;
   height: number;
   speed: number;
+  image: HTMLImageElement;
 
   constructor(
     x: number,
@@ -11,12 +12,14 @@ export class Obstacle {
     width: number,
     height: number,
     speed: number,
+    image: HTMLImageElement,
   ) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.speed = speed;
+    this.image = image;
   }
 
   update() {
@@ -24,12 +27,6 @@ export class Obstacle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.fillStyle = "#4b3b2a";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
-
-    // ctx.strokeStyle = "blue";
-    // ctx.lineWidth = 2;
-
-    // ctx.strokeRect(this.x, this.y, this.width, this.height);
+    ctx.drawImage(this.image, this.x, this.y - 2, 60, 70);
   }
 }

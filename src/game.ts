@@ -1,5 +1,8 @@
 import { Player } from "./player";
 import { Obstacle } from "./obstacle";
+import cactus from "./assets/cacti.png";
+import brokenGlass from "./assets/glasspoint.png";
+import thornball from "./assets/thornball.png";
 
 export type GameState = "playing" | "gameOver";
 
@@ -9,6 +12,7 @@ export class Game {
 
   player: Player;
   obstacles: Obstacle[] = [];
+  obstacleImages: HTMLImageElement[] = [];
 
   state: GameState = "playing";
   sseraImage: HTMLImageElement;
@@ -27,6 +31,18 @@ export class Game {
 
     this.player = new Player(100, this.groundY - 175, this.groundY);
     this.setupInput();
+    //obstacle images
+
+    const cacti = new Image();
+    cacti.src = cactus;
+
+    const glass = new Image();
+    glass.src = brokenGlass;
+
+    const thorn = new Image();
+    thorn.src = thornball;
+
+    this.obstacleImages = [cacti, glass, thorn];
 
     // this.spawnObstacle();
   }
@@ -43,12 +59,17 @@ export class Game {
     this.spawnInterval = Math.floor(Math.random() * 90 + 90);
   }
   spawnObstacle() {
+    const image =
+      this.obstacleImages[
+        Math.floor(Math.random() * this.obstacleImages.length)
+      ];
     const obstacle = new Obstacle(
       this.canvas.width,
       this.groundY - 60,
       40,
       60,
       7,
+      image,
     );
     this.obstacles.push(obstacle);
   }
@@ -132,12 +153,12 @@ export class Game {
     this.ctx.strokeStyle = "#e06598";
     this.ctx.lineWidth = 2;
 
-    for (let x = 0; x < this.canvas.width; x += 100) {
-      this.ctx.beginPath();
-      this.ctx.moveTo(x, 0);
-      this.ctx.lineTo(x, 330);
-      this.ctx.stroke();
-    }
+    // for (let x = 0; x < this.canvas.width; x += 100) {
+    //   this.ctx.beginPath();
+    //   this.ctx.moveTo(x, 0);
+    //   this.ctx.lineTo(x, 330);
+    //   this.ctx.stroke();
+    // }
 
     // Floor
     this.ctx.fillStyle = "#55798f";
@@ -157,6 +178,25 @@ export class Game {
 
     if (this.groundOffset <= -40) {
       this.groundOffset = 0;
+    }
+
+    this.ctx.fillStyle = "#e7dda9";
+    this.ctx.fillRect(0, 0, this.canvas.width, 35);
+
+    this.ctx.fillStyle = "#f4edc9";
+
+    for (let x = this.wallOffset; x < this.canvas.width; x += 100) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(x, 35);
+      this.ctx.lineTo(x, this.groundY);
+      this.ctx.stroke();
+    }
+
+    // Scroll wall
+    this.wallOffset -= 1.5;
+
+    if (this.wallOffset <= -100) {
+      this.wallOffset = 0;
     }
   }
 
