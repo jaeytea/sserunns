@@ -5,13 +5,13 @@ export class AudioSuite {
   clickSound: HTMLAudioElement;
 
   constructor() {
-    this.bgMusic = new Audio("/audio/throw.wav");
+    this.bgMusic = new Audio("/audio/bgm.wav");
     this.jumpSound = new Audio("/audio/jump.wav");
     this.clickSound = new Audio("/audio/button.wav");
-    this.gameOverSound = new Audio("/audio/lightningstrike.wav");
+    this.gameOverSound = new Audio("/audio/playerhurt.wav");
 
     this.bgMusic.loop = true;
-    this.bgMusic.volume = 0.35;
+    this.bgMusic.volume = 0.2;
     this.jumpSound.volume = 0.5;
     this.gameOverSound.volume = 0.6;
     this.clickSound.volume = 0.5;

@@ -5,7 +5,7 @@ import brokenGlass from "./assets/glasspoint.png";
 import thornball from "./assets/thornball.png";
 import type { AudioSuite } from "./audio";
 
-export type GameState = "playing" | "gameOver";
+export type GameState = "idle" | "playing" | "gameOver";
 
 export class Game {
   canvas: HTMLCanvasElement;
@@ -15,7 +15,7 @@ export class Game {
   obstacles: Obstacle[] = [];
   obstacleImages: HTMLImageElement[] = [];
 
-  state: GameState = "playing";
+  state: GameState = "idle";
   sseraImage: HTMLImageElement;
   groundY: number;
   audio: AudioSuite;
@@ -48,6 +48,11 @@ export class Game {
 
     this.obstacleImages = [cacti, glass, thorn];
 
+    //following works when obstacles move fast, environment moves fast too.
+    const environmentSpeed = this.speed / 7;
+    this.groundOffset -= 2 * environmentSpeed;
+    this.wallOffset -= 1.5 * environmentSpeed;
+
     // this.spawnObstacle();
   }
 
@@ -56,8 +61,14 @@ export class Game {
 
   spawnTimer = 0;
   spawnInterval = 120;
+  spawnDistance = 500;
+  distSinceSpawn = 0;
 
   score = 0;
+
+  speed = 7;
+  nextSpeedInc = 150;
+  // this.speed=Math.min(this.speed, 13)
 
   setNextSpawnInterval() {
     this.spawnInterval = Math.floor(Math.random() * 90 + 90);
@@ -72,22 +83,41 @@ export class Game {
       this.groundY - 60,
       40,
       60,
-      7,
+      this.speed,
       image,
     );
     this.obstacles.push(obstacle);
   }
 
   update() {
-    console.log("UPDATE RUNNING");
+    if (this.state === "idle") {
+      return;
+    }
     if (this.state === "gameOver") {
       return;
     }
+
     this.score++;
+
+    //speed inc
+    if (this.score >= this.nextSpeedInc) {
+      const increase = Math.random() * 1 + 0.5;
+
+      this.speed += increase;
+
+      // Prevent the game from becoming impossible
+      this.speed = Math.min(this.speed, 13);
+
+      this.nextSpeedInc += Math.floor(Math.random() * 100 + 75);
+
+      console.log(`Speed increased to ${this.speed.toFixed(2)}`);
+    }
 
     this.player.update();
 
+    //obstacle update
     for (const obstacle of this.obstacles) {
+      obstacle.speed = this.speed;
       obstacle.update();
 
       if (this.player.collidesWith(obstacle)) {
@@ -100,12 +130,15 @@ export class Game {
       (obstacle) => obstacle.x + obstacle.width > 0,
     );
 
-    this.spawnTimer++;
+    this.distSinceSpawn += this.speed;
 
-    if (this.spawnTimer >= this.spawnInterval) {
+    if (this.distSinceSpawn >= this.spawnDistance) {
       this.spawnObstacle();
-      this.spawnTimer = 0;
-      this.setNextSpawnInterval();
+
+      this.distSinceSpawn = 0;
+
+      // Random gap between 700 and 1100 pixels
+      this.spawnDistance = Math.random() * 400 + 700;
     }
   }
 
@@ -122,9 +155,33 @@ export class Game {
 
     this.drawScore();
 
+    if (this.state === "idle") {
+      this.drawStartScreen();
+    }
+
     if (this.state === "gameOver") {
       this.drawGameOver();
     }
+  }
+  drawStartScreen() {
+    this.ctx.fillStyle = "rgba(40, 20, 45, 0.25)";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.textAlign = "center";
+
+    this.ctx.fillStyle = "#fff";
+    this.ctx.font = "bold 42px monospace";
+
+    this.ctx.fillText("SSERA'S RUN", this.canvas.width / 2, 150);
+
+    //start button aesthetics
+    this.ctx.fillStyle = "#e887b8";
+    this.ctx.fillRect(this.canvas.width / 2 - 130, 200, 260, 70);
+
+    this.ctx.fillStyle = "#fff";
+    this.ctx.font = "bold 26px monospace";
+
+    this.ctx.fillText("START RUN", this.canvas.width / 2, 245);
   }
 
   drawGameOver() {
@@ -150,7 +207,7 @@ export class Game {
   }
 
   drawBackground() {
-    // Walls
+    //backrooom-wall
     this.ctx.fillStyle = "#b78390 ";
     this.ctx.fillRect(0, 0, this.canvas.width, 330);
 
@@ -185,10 +242,23 @@ export class Game {
       this.groundOffset = 0;
     }
 
+    //ceiling here
+
     this.ctx.fillStyle = "#e7dda9";
     this.ctx.fillRect(0, 0, this.canvas.width, 35);
 
+    //ceiling light nd their glow
     this.ctx.fillStyle = "#f4edc9";
+
+    for (let x = this.wallOffset; x < this.canvas.width; x += 160) {
+      this.ctx.fillRect(x, 10, 90, 10);
+    }
+
+    this.ctx.fillStyle = "rgba(244, 237, 201, 0.15)";
+
+    for (let x = this.wallOffset; x < this.canvas.width; x += 160) {
+      this.ctx.fillRect(x, 20, 90, 35);
+    }
 
     for (let x = this.wallOffset; x < this.canvas.width; x += 100) {
       this.ctx.beginPath();
@@ -197,7 +267,7 @@ export class Game {
       this.ctx.stroke();
     }
 
-    // Scroll wall
+    //wall moves
     this.wallOffset -= 1.5;
 
     if (this.wallOffset <= -100 || this.state === "gameOver") {
@@ -257,5 +327,37 @@ export class Game {
     this.wallOffset = 0;
 
     this.player.reset();
+    this.audio.startMusic();
+  }
+
+  handleClick(event: MouseEvent) {
+    if (this.state !== "idle") {
+      return;
+    }
+
+    const rect = this.canvas.getBoundingClientRect();
+
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
+    const buttonX = this.canvas.width / 2 - 130;
+    const buttonY = 200;
+    const buttonWidth = 260;
+    const buttonHeight = 70;
+
+    if (
+      x >= buttonX &&
+      x <= buttonX + buttonWidth &&
+      y >= buttonY &&
+      y <= buttonY + buttonHeight
+    ) {
+      this.state = "playing";
+
+      this.audio.click();
+      this.audio.startMusic();
+    }
   }
 }

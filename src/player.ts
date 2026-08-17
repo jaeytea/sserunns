@@ -41,23 +41,39 @@ export class Player {
 
     this.animationTimer += this.animationSpeed;
     if (this.animationTimer >= 1) {
-      this.currentFrame = (this.currentFrame + 1) % 3;
+      this.currentFrame = (this.currentFrame + 1) % 5;
       this.animationTimer = 0;
     }
   }
 
   draw(ctx: CanvasRenderingContext2D, image: HTMLImageElement) {
-    const frameX = [0, 362, 724];
-    const frameY = [0, 483, 966];
+    // const frameX = [0, 362, 724];
+    // const frameY = [0, 483, 966];
 
-    const column = this.currentFrame % 3;
-    const row = Math.floor(this.currentFrame / 3);
+    // const column = this.currentFrame % 3;
+    // const row = Math.floor(this.currentFrame / 3);
+
+    // const sourceX = frameX[column];
+    // const sourceY = frameY[row];
+
+    // const sourceWidth = 362;
+    // const sourceHeight = row === 2 ? 482 : 483;
+
+    const frames = [0, 1, 2, 6, 7];
+
+    const frameIndex = frames[this.currentFrame % frames.length];
+
+    const frameX = [0, 374, 748];
+    const frameY = [0, 467, 935];
+
+    const column = frameIndex % 3;
+    const row = Math.floor(frameIndex / 3);
 
     const sourceX = frameX[column];
     const sourceY = frameY[row];
 
-    const sourceWidth = 362;
-    const sourceHeight = row === 2 ? 482 : 483;
+    const sourceWidth = 374;
+    const sourceHeight = 467;
 
     ctx.drawImage(
       image,
@@ -72,7 +88,7 @@ export class Player {
       this.width,
       this.height,
     );
-    const box = this.getCollisionBox();
+    // const box = this.getCollisionBox();
 
     // ctx.strokeStyle = "red";
     // ctx.lineWidth = 2;

@@ -32,6 +32,9 @@ ssera.onload = () => {
 
   gameConsole.render();
   const game = new Game(canvas, context, ssera, audio);
+  canvas.addEventListener("click", (event) => {
+    game.handleClick(event);
+  });
 
   game.start();
 };
