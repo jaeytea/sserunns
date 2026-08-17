@@ -51,8 +51,8 @@ followed by hit and trial with numbers until it was just there :D
 ```bash
 npm install
 npm run dev
+```
 
 **Also, did you notice?**
 
 > She has her lucky purse all along :D
-```
