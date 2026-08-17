@@ -1,3 +1,4 @@
+import { Obstacle } from "./obstacle";
 export class Player {
   x: number;
   y: number;
@@ -18,6 +19,13 @@ export class Player {
     this.x = x;
     this.y = y;
     this.groundY = groundY;
+  }
+
+  reset() {
+    this.x = 100;
+    this.y = this.groundY - 175;
+    this.velocityX = 0;
+    this.velocityY = 0;
   }
 
   update() {
@@ -64,11 +72,36 @@ export class Player {
       this.width,
       this.height,
     );
+    const box = this.getCollisionBox();
+
+    // ctx.strokeStyle = "red";
+    // ctx.lineWidth = 2;
+
+    // ctx.strokeRect(box.x, box.y, box.width, box.height);
   }
 
   jump() {
     if (this.y + this.height >= this.groundY) {
       this.velocityY = -14;
     }
+  }
+
+  getCollisionBox() {
+    return {
+      x: this.x + 15,
+      y: this.y - this.height + 100,
+      width: 70,
+      height: this.height,
+    };
+  }
+
+  collidesWith(obstacle: Obstacle): boolean {
+    const playerBox = this.getCollisionBox();
+    return (
+      playerBox.x < obstacle.x + obstacle.width &&
+      playerBox.x + playerBox.width > obstacle.x &&
+      playerBox.y < obstacle.y + obstacle.height &&
+      playerBox.y + playerBox.height > obstacle.y
+    );
   }
 }
