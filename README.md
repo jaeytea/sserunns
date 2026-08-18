@@ -6,6 +6,8 @@ Ssera has to keep running through an endless hallway, jumping over obstacles and
 
 The game gets progressively faster as the score increases, because apparently running forever wasn't difficult enough. Oh tmi, i dont run irl :P
 
+![SSERUNNS](/src/assets/image.png)
+
 ## Tech Stack
 
 - Vanilla TypeScript
