@@ -41,7 +41,7 @@ export class Player {
 
     this.animationTimer += this.animationSpeed;
     if (this.animationTimer >= 1) {
-      this.currentFrame = (this.currentFrame + 1) % 5;
+      this.currentFrame = (this.currentFrame + 1) % 4;
       this.animationTimer = 0;
     }
   }
@@ -59,7 +59,7 @@ export class Player {
     // const sourceWidth = 362;
     // const sourceHeight = row === 2 ? 482 : 483;
 
-    const frames = [0, 1, 2, 6, 7];
+    const frames = [0, 1, 2, 7];
 
     const frameIndex = frames[this.currentFrame % frames.length];
 

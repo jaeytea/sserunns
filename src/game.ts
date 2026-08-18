@@ -172,7 +172,7 @@ export class Game {
     this.ctx.fillStyle = "#fff";
     this.ctx.font = "bold 42px monospace";
 
-    this.ctx.fillText("SSERA'S RUN", this.canvas.width / 2, 150);
+    this.ctx.fillText("Hi,SSERA Here!", this.canvas.width / 2, 150);
 
     //start button aesthetics
     this.ctx.fillStyle = "#e887b8";
@@ -198,7 +198,7 @@ export class Game {
     this.ctx.font = "24px 'Geist Pixel', monospace";
 
     this.ctx.fillText(
-      `SCORE: ${Math.floor(this.score / 6)}`,
+      `YOUR SCORE: ${Math.floor(this.score / 6)}`,
       this.canvas.width / 2,
       340,
     );
@@ -276,16 +276,47 @@ export class Game {
   }
 
   //drawscore
-  drawScore() {
-    this.ctx.fillStyle = "#3f3525";
-    this.ctx.font = "24px 'Geist Pixel', monospace";
-    this.ctx.textAlign = "right";
+  // drawScore() {
+  //   this.ctx.fillStyle = "#3f3525";
+  //   this.ctx.font = "24px 'Geist Pixel', monospace";
+  //   this.ctx.textAlign = "right";
 
-    this.ctx.fillText(
-      `SCORE: ${Math.floor(this.score / 6)}`,
-      this.canvas.width - 20,
-      40,
-    );
+  //   this.ctx.fillText(
+  //     `SCORE: ${Math.floor(this.score / 6)}`,
+  //     this.canvas.width - 20,
+  //     40,
+  //   );
+  // }
+  drawScore() {
+    const score = Math.floor(this.score / 6)
+      .toString()
+      .padStart(4, "0");
+
+    const x = this.canvas.width - 190;
+    const y = 15;
+    const width = 150;
+    const height = 50;
+
+    // Panel
+    this.ctx.fillStyle = "#caa2c4";
+    this.ctx.fillRect(x, y, width, height);
+
+    // Border
+    this.ctx.strokeStyle = "#e3e3e3";
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(x, y, width, height);
+
+    // Title
+    this.ctx.fillStyle = "#3f3525";
+    this.ctx.font = "12px monospace";
+    this.ctx.textAlign = "left";
+
+    // this.ctx.fillText("♥  SSERUNNS", x + 10, y + 20);
+
+    // Score
+    this.ctx.font = "16px monospace";
+
+    this.ctx.fillText(`SCORE  ${score}`, x + 25, y + 30);
   }
 
   start() {

@@ -28,15 +28,17 @@ export class GameConsole {
 
     const dpad = document.createElement("div");
     dpad.className = "dpad";
-    dpad.innerHTML = `
-      <div>▲</div>
-      <div>◀ ● ▶</div>
-      <div>▼</div>
-    `;
+
+    const gamepadIcon = document.createElement("span");
+    gamepadIcon.className = "material-symbols-outlined gamepad-icon";
+    gamepadIcon.textContent = "Gamepad";
+    gamepadIcon.title = "Gamepad";
+
+    dpad.appendChild(gamepadIcon);
 
     const label = document.createElement("div");
     label.className = "console-label";
-    label.textContent = "SPACE = JUMP";
+    label.textContent = "@jaeytea";
 
     const buttons = document.createElement("div");
     buttons.className = "console-buttons";

@@ -38,5 +38,19 @@ ssera.onload = () => {
     game.handleClick(event);
   });
 
+  //mobile
+  canvas.style.touchAction = "none";
+
+  canvas.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+
+    if (game.state === "gameOver") {
+      game.reset();
+      return;
+    }
+
+    game.player.jump();
+  });
+
   game.start();
 };
